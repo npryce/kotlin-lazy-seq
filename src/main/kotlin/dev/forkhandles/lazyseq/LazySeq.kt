@@ -47,7 +47,7 @@ tailrec fun <T, U> LazySeq<T>.fold(start: U, f: (U, T) -> U): U = when (this) {
 
 fun <T, U> LazySeq<T>.map(f: (T) -> U): LazySeq<U> = when (this) {
     emptyLazySeq -> this
-    else -> LazyCons(lazy { f(head) }, lazy { tail?.map(f) })
+    else -> LazyCons(lazy { f(head) }, lazy { tail.map(f) })
 }
 
 fun <T> LazySeq<T>.append(appendage: LazySeq<T>): LazySeq<T> = when (this) {
