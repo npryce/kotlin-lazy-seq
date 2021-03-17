@@ -66,3 +66,11 @@ fun <T> LazySeq<T>.take(n: Int): LazySeq<T> = when {
     n == 0 || this == emptyLazySeq -> emptyLazySeq
     else -> LazyCons(headThunk, lazy { tail.take(n - 1) })
 }
+
+private fun <T> Iterator<T>.toLazySeq(): LazySeq<T> = when {
+    hasNext() -> LazyCons(lazyOf(next()), lazy { toLazySeq() })
+    else -> emptyLazySeq
+}
+
+fun <T> Iterable<T>.toLazySeq() = iterator().toLazySeq()
+fun <T> Sequence<T>.toLazySeq() = iterator().toLazySeq()
