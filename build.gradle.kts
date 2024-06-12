@@ -1,12 +1,10 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.30"
-    application
+    kotlin("jvm") version "2.0.0"
 }
-
-group = "com.natpryce.lazyseq"
-version = "0.0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -22,12 +20,8 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "11"
-    kotlinOptions.useIR = true
-    kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotli n.contracts.ExperimentalContracts")
-}
-
-application {
-    mainClassName = "MainKt"
+tasks.withType(KotlinCompilationTask::class.java) {
+    compilerOptions {
+        freeCompilerArgs.add("-Xopt-in=kotlin.contracts.ExperimentalContracts")
+    }
 }
