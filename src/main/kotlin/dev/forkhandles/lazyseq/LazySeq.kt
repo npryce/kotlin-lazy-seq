@@ -30,6 +30,26 @@ data class LazyCons<out T>(val headThunk: Lazy<T>, val tailThunk: Lazy<LazySeq<T
         
         return str.toString()
     }
+    
+    
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        
+        other as LazyCons<*>
+        
+        if (headThunk == other.headThunk && tailThunk == other.tailThunk) return true
+        if (head != other.head) return false
+        if (tail != other.tail) return false
+        
+        return true
+    }
+    
+    override fun hashCode(): Int {
+        var result = head?.hashCode() ?: 0
+        result = 31 * result + (tail?.hashCode() ?: 0)
+        return result
+    }
 }
 
 fun <T> generateLazySeq(start: T?, next: (T) -> T?): LazySeq<T> =
@@ -46,7 +66,7 @@ tailrec fun <T, U> LazySeq<T>.fold(start: U, f: (U, T) -> U): U = when (this) {
 }
 
 fun <T, U> LazySeq<T>.map(f: (T) -> U): LazySeq<U> = when (this) {
-    emptyLazySeq -> this
+    emptyLazySeq -> emptyLazySeq
     else -> LazyCons(lazy { f(head) }, lazy { tail.map(f) })
 }
 
